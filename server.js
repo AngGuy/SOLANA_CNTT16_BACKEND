@@ -1,11 +1,14 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const cors = require("cors");
+
 require("dotenv").config();
 
 const userRoutes = require("./routes/userRoutes");
 const nftRoutes = require("./routes/nftRoutes");
 
 const app = express();
+app.use(cors());
 app.use(bodyParser.json());
 
 // Routes

@@ -1,24 +1,28 @@
-const fetch = require("node-fetch");
-require("dotenv").config();
-
-const API_KEY = process.env.API_KEY;
-const BASE_URL = "https://api.gameshift.dev/nx";
-
-// Hàm helper gọi API Gameshyft
-const callGameshyftAPI = async (endpoint, method, body) => {
+const callGameshiftAPI = async (endpoint, method = "GET", body = null) => {
+  const url = `https://api.gameshift.dev${endpoint}`;
   const options = {
     method,
     headers: {
       accept: "application/json",
-      "x-api-key": API_KEY,
-      "content-type": "application/json",
+      "Content-Type": "application/json",
+      "x-api-key": process.env.API_KEY,
     },
-    body: body ? JSON.stringify(body) : undefined,
   };
 
-  const response = await fetch(`${BASE_URL}${endpoint}`, options);
-  const data = await response.json();
-  return data;
-};
+  if (body) {
+    options.body = JSON.stringify(body);
+  }
 
-module.exports = { callGameshyftAPI };
+  try {
+    const response = await fetch(url, options);
+    const data = await response.json();
+    if (!response.ok) {
+      console.error("API Error:", response.status, data);
+      throw new Error(data.error || "API request failed");
+    }
+    return data;
+  } catch (err) {
+    console.error("Error calling Gameshift API:", err);
+    throw err;
+  }
+};
