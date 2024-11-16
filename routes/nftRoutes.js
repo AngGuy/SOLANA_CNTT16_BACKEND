@@ -6,6 +6,7 @@ const {
   createUniqueAsset,
   listAssetForSale,
   getItem,
+  getAllNFT,
 } = require("../controllers/nftController");
 
 const router = express.Router();
@@ -24,6 +25,9 @@ router.get("/fetch-items", fetchItems2);
 
 //Lấy riêng NFT
 router.get("/get-item/:itemId", getItem);
+
+//Lấy all NFT
+router.get("/get-all-nft", getAllNFT);
 
 router.get("/fetch-nfts", fetchNFTs);
 

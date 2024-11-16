@@ -1,5 +1,5 @@
 const { callGameshyftAPI } = require("../services/gameshyftService");
-const collectionID = process.env.collectionId;
+
 // Tạo NFT
 const createUniqueAsset = async (req, res) => {
   try {
@@ -243,6 +243,38 @@ const fetchNFTs = async (req, res) => {
     res.status(500).json({ error: "Something went wrong." });
   }
 };
+
+//get all NFT
+const getAllNFT = async (req, res) => {
+  const collectionID = process.env.collectionId;
+  try {
+    const url = `https://api.gameshift.dev/nx/asset-collections/${collectionID}/assets`;
+
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        "x-api-key": process.env.API_KEY, // Đảm bảo API_KEY được cấu hình trong môi trường
+      },
+    };
+
+    console.log("Fetching all NFTs:", url);
+
+    const response = await fetch(url, options);
+    const data = await response.json();
+
+    if (response.ok) {
+      res.status(200).json(data); // Trả về dữ liệu từ API
+    } else {
+      console.error("Failed to fetch NFTs, status:", response.status, data);
+      res.status(response.status).json({ error: "Failed to fetch NFTs." });
+    }
+  } catch (err) {
+    console.error("Error fetching NFTs:", err);
+    res.status(500).json({ error: "Something went wrong." });
+  }
+};
+
 module.exports = {
   createUniqueAsset,
   listAssetForSale,
@@ -250,4 +282,5 @@ module.exports = {
   fetchItems2,
   getItem,
   fetchNFTs,
+  getAllNFT,
 };
