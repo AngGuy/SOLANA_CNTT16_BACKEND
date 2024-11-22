@@ -31,5 +31,40 @@ const registerUser = async (req, res) => {
     res.status(500).json({ error: "Something went wrong." });
   }
 };
+const checkUserWallet = async (req, res) => {
+  try {
+    // URL của Gameshift API
+    const { walletAddress } = req.params; // Lấy walletAddress từ params
+    const url = `https://api.gameshift.dev/nx/users/wallet/${walletAddress}`;
 
-module.exports = { registerUser };
+    // Thiết lập headers và các tuỳ chọn
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        "x-api-key": process.env.API_KEY, // Lấy API key từ biến môi trường
+      },
+    };
+
+    // Gửi yêu cầu tới API
+    const response = await fetch(url, options);
+    const data = await response.json();
+
+    if (response.ok) {
+      // Nếu yêu cầu thành công, trả về dữ liệu từ API
+      res.status(200).json(data);
+    } else {
+      // Nếu yêu cầu thất bại, trả về lỗi
+      console.error("Failed to fetch user wallet:", response.status, data);
+      res.status(response.status).json({
+        error: `Failed to fetch user wallet. Status: ${response.status}`,
+      });
+    }
+  } catch (err) {
+    // Xử lý lỗi trong quá trình thực hiện
+    console.error("Error fetching user wallet:", err);
+    res.status(500).json({ error: "Something went wrong." });
+  }
+};
+
+module.exports = { registerUser, checkUserWallet };
