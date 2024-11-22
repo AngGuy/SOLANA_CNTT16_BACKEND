@@ -11,7 +11,7 @@ const createUniqueAsset = async (req, res) => {
       name,
       destinationUserReferenceId,
     } = req.body;
-
+    console.log(req.body);
     // Kiểm tra các trường bắt buộc
     if (
       !Array.isArray(attributes) ||
