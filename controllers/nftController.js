@@ -14,18 +14,26 @@ const createUniqueAsset = async (req, res) => {
 
     // Kiểm tra các trường bắt buộc
     if (
-      !attributes ||
+      !Array.isArray(attributes) ||
+      attributes.length === 0 ||
       !destinationUserReferenceId ||
       !name ||
       !description ||
       !imageUrl
     ) {
-      return res.status(400).json({ error: "Missing required fields." });
+      return res
+        .status(400)
+        .json({ error: "Missing or invalid required fields." });
     }
+
+    const formattedAttributes = attributes.map((attr) => ({
+      traitType: attr.traitType || "Unknown",
+      value: attr.value || "Unknown",
+    }));
 
     const body = {
       details: {
-        attributes, // Danh sách các thuộc tính
+        attributes: formattedAttributes,
         collectionId,
         description,
         imageUrl,
