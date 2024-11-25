@@ -7,6 +7,7 @@ const {
   listAssetForSale,
   getItem,
   getAllNFT,
+  getAllForSaleNFTs,
 } = require("../controllers/nftController");
 
 const router = express.Router();
@@ -30,5 +31,7 @@ router.get("/get-item/:itemId", getItem);
 router.get("/get-all-nft", getAllNFT);
 
 router.get("/fetch-nfts", fetchNFTs);
+
+router.get("/get-all-nft-sale", getAllForSaleNFTs);
 
 module.exports = router;

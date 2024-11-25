@@ -282,6 +282,45 @@ const getAllNFT = async (req, res) => {
     res.status(500).json({ error: "Something went wrong." });
   }
 };
+const getAllForSaleNFTs = async (req, res) => {
+  try {
+    const url = "https://api.gameshift.dev/nx/items?forSale=true"; // API endpoint
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        "x-api-key": process.env.API_KEY, // Sử dụng biến môi trường cho API key
+      },
+    };
+
+    console.log("Fetching all NFTs for sale from:", url);
+
+    // Thực hiện fetch dữ liệu
+    const response = await fetch(url, options);
+
+    // Kiểm tra xem response có thành công không
+    if (!response.ok) {
+      console.error("Failed to fetch NFTs for sale, status:", response.status);
+      return res
+        .status(response.status)
+        .json({ error: "Failed to fetch NFTs for sale." });
+    }
+
+    const data = await response.json();
+
+    // Log dữ liệu để kiểm tra
+    console.log("NFTs for sale fetched successfully:", data);
+
+    // Trả về dữ liệu JSON cho client
+    res.status(200).json(data);
+  } catch (err) {
+    console.error("Error fetching NFTs for sale:", err);
+    // Xử lý lỗi server
+    res
+      .status(500)
+      .json({ error: "Something went wrong while fetching NFTs." });
+  }
+};
 
 module.exports = {
   createUniqueAsset,
@@ -291,4 +330,5 @@ module.exports = {
   getItem,
   fetchNFTs,
   getAllNFT,
+  getAllForSaleNFTs,
 };
