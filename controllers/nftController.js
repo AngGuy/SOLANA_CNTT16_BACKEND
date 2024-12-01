@@ -122,6 +122,49 @@ const listAssetForSale = async (req, res) => {
   }
 };
 
+//Hủy bán NFT trên sàn
+const cancelAssetListing = async (req, res) => {
+  try {
+    const { IdNFT } = req.body; // Nhận IdNFT từ body
+    if (!IdNFT) {
+      return res.status(400).json({ error: "Missing required field: IdNFT." });
+    }
+
+    const url = `https://api.gameshift.dev/nx/unique-assets/${IdNFT}/cancel-listing`;
+
+    const options = {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+        "x-api-key": process.env.API_KEY, // API key từ biến môi trường
+      },
+      body: JSON.stringify({}), // Body mặc định rỗng
+    };
+
+    console.log("Canceling NFT listing:", url);
+
+    const response = await fetch(url, options);
+    const responseText = await response.text(); // Đọc toàn bộ phản hồi
+    console.log("Response text:", responseText);
+
+    if (response.ok) {
+      res.status(200).json(JSON.parse(responseText));
+    } else {
+      console.error("Failed to cancel listing, status:", response.status);
+      res
+        .status(response.status)
+        .json({
+          error: "Failed to cancel asset listing.",
+          detail: responseText,
+        });
+    }
+  } catch (err) {
+    console.error("Error canceling asset listing:", err);
+    res.status(500).json({ error: "Something went wrong." });
+  }
+};
+
 const buyNFT = async (req, res) => {
   try {
     const { IdNFT, buyerId } = req.body; // Nhận IdNFT và buyerId từ body
@@ -325,6 +368,7 @@ const getAllForSaleNFTs = async (req, res) => {
 module.exports = {
   createUniqueAsset,
   listAssetForSale,
+  cancelAssetListing,
   buyNFT,
   fetchItems2,
   getItem,
